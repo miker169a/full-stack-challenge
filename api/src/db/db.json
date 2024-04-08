@@ -1,0 +1,89 @@
+[
+  {
+    "name": "testName",
+    "description": "testDescriptioi",
+    "date": "2024-01-01",
+    "tickets": [],
+    "id": "fd2c3a53-eaf3-4600-a61d-e004a74e8553"
+  },
+  {
+    "name": "Mikes Test Event",
+    "date": "2024-01-01",
+    "description": "This is a test event.",
+    "tickets": [],
+    "id": "5e34bb35-4baf-4e19-85a7-0ca83a2b6db0"
+  },
+  {
+    "name": "Mikes Test Event",
+    "date": "2024-01-01",
+    "description": "This is a test event.",
+    "tickets": [],
+    "id": "ed78521b-d434-4885-b07a-b265a9206ca5"
+  },
+  {
+    "name": "asdfasdf",
+    "date": "2024-04-17",
+    "description": "asfdfsaf",
+    "tickets": [],
+    "id": "fc8f4f47-716f-4f6c-bb45-266e716e6d62"
+  },
+  {
+    "name": "Xmas",
+    "date": "2024-04-17",
+    "description": "asfdfsaf",
+    "tickets": [
+      {
+        "name": "asdfaasf",
+        "type": "asdffsda",
+        "price": 0,
+        "bookingFee": 200,
+        "availability": "sold out",
+        "id": "1ce47487-90a9-4892-a78c-bf46aa294c5a",
+        "eventId": "9cb11057-2034-4fa0-976c-f9aebe3e6d90"
+      }
+    ],
+    "id": "9cb11057-2034-4fa0-976c-f9aebe3e6d90"
+  },
+  {
+    "name": "asfda",
+    "date": "2024-04-03",
+    "description": "asdfa",
+    "tickets": [],
+    "id": "bcc81f53-8b13-4b54-a717-03f4af9478c0"
+  },
+  {
+    "name": "asdfasdf",
+    "date": "2024-04-17",
+    "description": "asdfasf",
+    "tickets": [],
+    "id": "6d4dab9e-e45c-4441-b4d5-aebbfbf555a9"
+  },
+  {
+    "name": "asdfasdf",
+    "date": "2024-04-17",
+    "description": "asdfasf",
+    "tickets": [],
+    "id": "47a92cff-d75c-46b9-af43-846e27958913"
+  },
+  {
+    "name": "asfdasdf",
+    "date": "2024-04-12",
+    "description": "sadfasdf",
+    "tickets": [],
+    "id": "a270886d-f050-4fb0-8510-4bbd0482998e"
+  },
+  {
+    "name": "asfdasdf",
+    "date": "2024-04-12",
+    "description": "sadfasdf",
+    "tickets": [],
+    "id": "000b584d-2238-4708-b417-57218cc370a3"
+  },
+  {
+    "name": "asdfasf",
+    "date": "2024-04-10",
+    "description": "asdfasdfd",
+    "tickets": [],
+    "id": "91ede2ba-578c-4bf6-852f-9463c056fa1c"
+  }
+]

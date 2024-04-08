@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  api:
+    build: ./api
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    command: npm run dev
+
+  events:
+    build: ./events
+    ports:
+      - "3000:80"
+    volumes:
+      - ./events:/app
+      - /app/node_modules
+
