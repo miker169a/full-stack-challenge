@@ -30,3 +30,10 @@ cd yourprojectname
 docker-compose up --build
 
 ```bash
+
+
+3. ** Docs **
+
+The API documentation is available at the following URL: http://localhost:3001/docs
+
+These should be running under (http://localhost:3001/docs)
