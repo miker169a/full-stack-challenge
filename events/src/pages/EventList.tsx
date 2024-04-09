@@ -51,7 +51,7 @@ function EventList() {
   ): (...args: Parameters<F>) => void {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    return function (...args: Parameters<F>) {
+    return function(...args: Parameters<F>) {
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
       }

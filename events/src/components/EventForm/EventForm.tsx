@@ -40,7 +40,6 @@ interface EventFormProps {
 }
 
 const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
-  // Component implementation
   const [formData, setFormData] = useState<EventFormData>({
     name: "",
     date: "",
@@ -133,6 +132,11 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
     );
   };
 
+  const handleChangeDateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   const renderTicketTypeForm = (ticket: Ticket, index: number) => (
     <AccordionItem key={index}>
       <h2>
@@ -147,7 +151,6 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
         <HStack justifyContent="space-between" pt={4}>
           <FormControl key={index} mb={4}>
             {" "}
-            {/* Margin bottom for spacing between form controls */}
             <FormLabel htmlFor={`ticket-name-${index}`}>Ticket Name</FormLabel>
             <Input
               id={`ticket-name-${index}`}
@@ -225,11 +228,12 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
           <FormControl isInvalid={Boolean(errors.date)}>
             <FormLabel htmlFor="date">Event Date</FormLabel>
             <Input
+              as="input" 
               id="date"
               name="date"
-              type="date"
+              type="datetime-local"
               value={formData.date}
-              onChange={handleChange}
+              onChange={handleChangeDateTime}
             />
             <FormErrorMessage>{errors.date}</FormErrorMessage>
           </FormControl>
