@@ -18,21 +18,52 @@ export interface Event {
   tickets?: Ticket[];
 }
 
+interface LoadEventsParams {
+  requestedPage?: number;
+  requestedLimit?: number;
+  filterType?: keyof Event;
+  filterValue?: string;
+  sortBy?: keyof Event;
+  order?: "asc" | "desc";
+}
+
 export const useEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [eventDetails, setEventDetails] = useState<Event | null>(null);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(8);
 
-  const loadEvents = async () => {
+  const loadEvents = async ({
+    requestedPage = page,
+    requestedLimit = limit,
+    filterType,
+    filterValue,
+    sortBy,
+    order,
+  }: LoadEventsParams = {}) => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3001/events"); // Update the URL as per your API endpoint
+      let queryString = `page=${requestedPage}&limit=${requestedLimit}`;
+
+      if (filterType && filterValue) {
+        queryString += `&filterType=${encodeURIComponent(filterType)}&filterValue=${encodeURIComponent(filterValue)}`;
+      }
+
+      if (sortBy && order) {
+        queryString += `&sortBy=${sortBy}&order=${order}`;
+      }
+      const response = await fetch(
+        `http://localhost:3001/events?${queryString}`,
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      setEvents(data);
+      setEvents(data.events || []);
+      setPage(requestedPage);
+      setLimit(requestedLimit);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);

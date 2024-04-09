@@ -1,6 +1,6 @@
 import EventForm from "../components/EventForm/EventForm";
 import { useSaveEvent } from "../hooks/useSaveEvent";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export interface Ticket {
   id?: string;
@@ -21,15 +21,15 @@ export interface Event {
 }
 export const Home = () => {
   const { saveEvent } = useSaveEvent();
+  const navigate = useNavigate();
 
   const submitEvent = async (event: Event) => {
-    await saveEvent(event);
-    return redirect("/events");
+    const data: Event = await saveEvent(event);
+    navigate(`/events/${data.id}`);
   };
 
   return (
     <div>
-      <h1>Home</h1>
       <EventForm onSubmit={submitEvent} />
     </div>
   );

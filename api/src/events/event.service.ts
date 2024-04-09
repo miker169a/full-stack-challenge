@@ -3,6 +3,15 @@ import { assoc, map, pipe } from "ramda";
 import { v4 as uuidv4 } from "uuid";
 import { readData, writeData } from "../db";
 
+interface ListEventsParams {
+  page?: number;
+  limit?: number;
+  filterType?: "name" | "description"; // Allows filtering by any Event field
+  filterValue?: string;
+  sortBy?: keyof Event; // Allows sorting by any Event field
+  order?: "asc" | "desc";
+}
+
 export async function createOrUpdateEvent(
   event: Event,
   eventId?: string | null,
@@ -14,7 +23,7 @@ export async function createOrUpdateEvent(
       throw new Error("Event not found");
     }
     events[index] = { ...events[index], ...event };
-    // ToDo: add ids to new tickets
+    // ToDo: add ids to new tiggckets
     await writeData(events);
     return events[index];
   }
@@ -38,9 +47,37 @@ export async function createOrUpdateEvent(
   return newEvent;
 }
 
-export async function listEvents(): Promise<Event[]> {
-  const events = await readData();
-  return events;
+export async function listEvents({
+  page = 1,
+  limit = 20,
+  filterType,
+  filterValue,
+  sortBy,
+  order = "asc",
+}: ListEventsParams): Promise<Event[]> {
+  let events: Event[] = await readData();
+
+  if (filterType && filterValue) {
+    events = events.filter((event) =>
+      filterType && filterValue
+        ? event[filterType].toLowerCase().includes(filterValue.toLowerCase())
+        : true,
+    );
+  }
+
+  if (sortBy && events[0][sortBy]) {
+    events.sort((a: Event, b: Event) => {
+      if (String(a[sortBy]) < String(b[sortBy]))
+        return order === "asc" ? -1 : 1;
+      if (String(a[sortBy]) > String(b[sortBy]))
+        return order === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  return events.slice(startIndex, endIndex);
 }
 
 export async function findEvent(id: string): Promise<Event | undefined> {

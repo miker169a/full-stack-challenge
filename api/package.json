@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "dev": "npx nodemon src/index.ts",
+    "dev": "ts-node src/index.ts",
     "start": "node dist/index.js",
     "build": "npx tsc"
   },
@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "lowdb": "^7.0.1",
+    "luxon": "^3.4.4",
     "ramda": "^0.29.1",
     "uuid": "^9.0.1"
   },

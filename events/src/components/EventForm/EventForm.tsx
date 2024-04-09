@@ -1,4 +1,24 @@
 import React, { useState } from "react";
+import {
+  FormControl,
+  FormLabel,
+  Center,
+  Input,
+  Button,
+  Select,
+  NumberInput,
+  NumberInputField,
+  Textarea,
+  FormErrorMessage,
+  VStack,
+  HStack,
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
+} from "@chakra-ui/react";
 
 interface EventFormData {
   name: string;
@@ -32,7 +52,6 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
     date: "",
     description: "",
   });
-
   const validateForm = () => {
     let isValid = true;
     const errors = { name: "", date: "", description: "" };
@@ -52,12 +71,14 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
       errors.description = "Event description is required.";
     }
 
+    //ToDo validate ticket types
+
     setErrors(errors);
     return isValid;
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    if (event) event.preventDefault();
     if (validateForm()) {
       console.log("Form submitted:", formData);
       onSubmit(formData);
@@ -87,103 +108,159 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
     setFormData({ ...formData, tickets: updatedTicketTypes });
   };
 
+  const [openTicketIndex, setOpenTicketIndex] = useState<number | undefined>(
+    undefined,
+  );
+
   const addTicketType = () => {
-    setFormData({
-      ...formData,
-      tickets: [
-        ...formData.tickets,
-        {
-          name: "",
-          type: "",
-          price: 0,
-          bookingFee: 0,
-          availability: "available",
-        },
-      ],
-    });
+    const newTickets: Ticket[] = [
+      ...formData.tickets,
+      {
+        name: "",
+        type: "",
+        price: 0,
+        bookingFee: 0,
+        availability: "available",
+      },
+    ];
+    setFormData({ ...formData, tickets: newTickets });
+    setOpenTicketIndex(formData.tickets.length);
   };
 
+  const handleToggle = (index: number) => {
+    setOpenTicketIndex((prevIndex) =>
+      prevIndex === index ? undefined : index,
+    );
+  };
+
+  const renderTicketTypeForm = (ticket: Ticket, index: number) => (
+    <AccordionItem key={index}>
+      <h2>
+        <AccordionButton onClick={() => handleToggle(index)}>
+          <Box flex="1" textAlign="left">
+            Ticket Type {index + 1}: {ticket.name || "New Ticket"}
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+      </h2>
+      <AccordionPanel pb={4}>
+        <HStack justifyContent="space-between" pt={4}>
+          <FormControl key={index} mb={4}>
+            {" "}
+            {/* Margin bottom for spacing between form controls */}
+            <FormLabel htmlFor={`ticket-name-${index}`}>Ticket Name</FormLabel>
+            <Input
+              id={`ticket-name-${index}`}
+              placeholder="Ticket Name"
+              value={ticket.name}
+              onChange={(e) =>
+                handleTicketChange(index, "name", e.target.value)
+              }
+            />
+            <FormLabel htmlFor={`ticket-type-${index}`}>Ticket Type</FormLabel>
+            <Input
+              id={`ticket-type-${index}`}
+              placeholder="Ticket Type"
+              value={ticket.type}
+              onChange={(e) =>
+                handleTicketChange(index, "type", e.target.value)
+              }
+            />
+            <FormLabel htmlFor={`ticket-price-${index}`}>Price</FormLabel>
+            <NumberInput
+              value={ticket.price}
+              onChange={(valueString) =>
+                handleTicketChange(index, "price", parseFloat(valueString))
+              }
+              min={0}
+            >
+              <NumberInputField id={`ticket-price-${index}`} />
+            </NumberInput>
+            <FormLabel htmlFor={`ticket-bookingFee-${index}`}>
+              Booking Fee
+            </FormLabel>
+            <NumberInput
+              value={ticket.bookingFee}
+              onChange={(valueString) =>
+                handleTicketChange(index, "bookingFee", parseFloat(valueString))
+              }
+              min={0}
+            >
+              <NumberInputField id={`ticket-bookingFee-${index}`} />
+            </NumberInput>
+            <FormLabel htmlFor={`ticket-availability-${index}`}>
+              Availability
+            </FormLabel>
+            <Select
+              id={`ticket-availability-${index}`}
+              value={ticket.availability}
+              onChange={(e) =>
+                handleTicketChange(index, "availability", e.target.value)
+              }
+              placeholder="Select availability"
+            >
+              <option value="available">Available</option>
+              <option value="sold out">Sold Out</option>
+            </Select>
+          </FormControl>
+        </HStack>
+      </AccordionPanel>
+    </AccordionItem>
+  );
+
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="name">Event Name</label>
-      <input
-        id="name"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-      />
-      {errors.name && <div style={{ color: "red" }}>{errors.name}</div>}
-
-      <label htmlFor="date">Event Date</label>
-      <input
-        id="date"
-        name="date"
-        type="date"
-        value={formData.date}
-        onChange={handleChange}
-      />
-      {errors.date && <div style={{ color: "red" }}>{errors.date}</div>}
-
-      <label htmlFor="description">Event Description</label>
-      <textarea
-        id="description"
-        name="description"
-        value={formData.description}
-        onChange={handleChange}
-      />
-      {errors.description && (
-        <div style={{ color: "red" }}>{errors.description}</div>
-      )}
-
-      {formData.tickets.map((ticket, index) => (
-        <div key={index}>
-          <input
-            placeholder="Ticket Name"
-            value={ticket.name}
-            onChange={(e) => handleTicketChange(index, "name", e.target.value)}
-          />
-          <input
-            placeholder="Ticket Type"
-            value={ticket.type}
-            onChange={(e) => handleTicketChange(index, "type", e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="Price"
-            value={ticket.price}
-            onChange={(e) =>
-              handleTicketChange(index, "price", parseFloat(e.target.value))
-            }
-          />
-          <input
-            type="number"
-            placeholder="Booking Fee"
-            value={ticket.bookingFee}
-            onChange={(e) =>
-              handleTicketChange(
-                index,
-                "bookingFee",
-                parseFloat(e.target.value),
-              )
-            }
-          />
-          <select
-            value={ticket.availability}
-            onChange={(e) =>
-              handleTicketChange(index, "availability", e.target.value)
-            }
-          >
-            <option value="available">Available</option>
-            <option value="sold out">Sold Out</option>
-          </select>
-        </div>
-      ))}
-
-      <button type="button" onClick={addTicketType}>
-        Add Ticket Type
-      </button>
-      <button type="submit">Submit</button>
-    </form>
+    <Center w="full" h="100vh">
+      <form onSubmit={handleSubmit}>
+        <VStack spacing={4} align="flex-start">
+          <FormControl isInvalid={Boolean(errors.name)}>
+            <FormLabel htmlFor="name">Event Name</FormLabel>
+            <Input
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            <FormErrorMessage>{errors.name}</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={Boolean(errors.date)}>
+            <FormLabel htmlFor="date">Event Date</FormLabel>
+            <Input
+              id="date"
+              name="date"
+              type="date"
+              value={formData.date}
+              onChange={handleChange}
+            />
+            <FormErrorMessage>{errors.date}</FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={Boolean(errors.description)}>
+            <FormLabel htmlFor="description">Event Description</FormLabel>
+            <Textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+            />
+            <FormErrorMessage>{errors.description}</FormErrorMessage>
+          </FormControl>
+        </VStack>
+        <Accordion
+          allowMultiple
+          index={openTicketIndex}
+          onChange={(index) => setOpenTicketIndex(index as number)}
+        >
+          {formData.tickets.map(renderTicketTypeForm)}
+        </Accordion>
+        <HStack justifyContent="space-between" pt={4}>
+          <Button colorScheme="blue" type="submit">
+            Submit
+          </Button>
+          <Button variant="outline" onClick={addTicketType}>
+            Add Ticket Type
+          </Button>
+        </HStack>
+      </form>
+    </Center>
   );
 };
 

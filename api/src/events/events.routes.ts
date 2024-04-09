@@ -6,6 +6,14 @@ import {
   listEvents,
 } from "./event.service";
 import { Event } from "./event.model";
+interface QueryParams {
+  page?: string;
+  limit?: string;
+  filterType?: "name" | "description";
+  filterValue?: string;
+  sortBy?: keyof Event;
+  order?: "asc" | "desc";
+}
 
 export const eventsRouter = express.Router();
 
@@ -29,9 +37,19 @@ eventsRouter.post("/", async (req: Request, res: Response) => {
 });
 
 eventsRouter.get("/", async (req: Request, res: Response) => {
+  const { page, limit, filterType, filterValue, sortBy, order }: QueryParams =
+    req.query;
+
   try {
-    const events = await listEvents();
-    res.json(events);
+    const events = await listEvents({
+      page: page ? parseInt(page) : undefined,
+      limit: limit ? parseInt(limit) : undefined,
+      filterType,
+      filterValue,
+      sortBy,
+      order,
+    });
+    res.json({ events, page, limit });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving events" });
   }
