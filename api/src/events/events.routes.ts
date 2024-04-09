@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Route, Controller, Post, Body, Get, Query, Path, Put, Delete, SuccessResponse, Response, Tags } from 'tsoa';
 import {
   createOrUpdateEvent,
   deleteEvent,
@@ -7,91 +7,62 @@ import {
 } from "./event.service";
 import { Event } from "./event.model";
 interface QueryParams {
-  page?: string;
-  limit?: string;
+  page?: number;
+  limit?: number;
   filterType?: "name" | "description";
   filterValue?: string;
   sortBy?: keyof Event;
   order?: "asc" | "desc";
 }
 
-export const eventsRouter = express.Router();
-
-eventsRouter.post("/", async (req: Request, res: Response) => {
-  const event: Event = req.body;
-
-  if (
-    !event.name ||
-    !event.date ||
-    !event.description ||
-    !Array.isArray(event.tickets)
-  ) {
-    return res
-      .status(400)
-      .json({ message: "Missing required fields or incorrect format" });
+@Tags('Events')
+@Route('events')
+export class EventController extends Controller {
+  @Post()
+  @SuccessResponse("201", "Created") // This decorator is used to set the success response status code
+  public async createEvent(@Body() event: Event): Promise<Event> {
+    this.setStatus(201); // Set HTTP status code
+    return createOrUpdateEvent(event);
   }
 
-  const newEvent = await createOrUpdateEvent(event);
-
-  res.status(201).json(newEvent);
-});
-
-eventsRouter.get("/", async (req: Request, res: Response) => {
-  const { page, limit, filterType, filterValue, sortBy, order }: QueryParams =
-    req.query;
-
-  try {
-    const events = await listEvents({
-      page: page ? parseInt(page) : undefined,
-      limit: limit ? parseInt(limit) : undefined,
-      filterType,
-      filterValue,
-      sortBy,
-      order,
-    });
-    res.json({ events, page, limit });
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving events" });
+  @Get()
+  public async getEvents(
+    @Query() page?: number,
+    @Query() limit?: number,
+    @Query() filterType?: "name" | "description",
+    @Query() filterValue?: string,
+    @Query() sortBy?: keyof Event,
+    @Query() order?: "asc" | "desc"
+  ): Promise<Event[]> {
+    return listEvents({page,limit, filterType, filterValue, sortBy, order});
   }
-});
 
-eventsRouter.get("/:id", async (req: Request, res: Response) => {
-  try {
-    const event = await findEvent(req.params.id);
+  @Get("{id}")
+  public async getEvent(@Path() id: string): Promise<Event | null> {
+    const event = await findEvent(id);
     if (!event) {
-      return res.status(404).json({ message: "Event not found" });
+      this.setStatus(404); // Not found
+      return null;
     }
-    res.status(200).json(event);
-  } catch (error) {
-    res.status(500).json({ message: "Error retrieving event" });
+    return event;
   }
-});
 
-eventsRouter.put("/:id", async (req, res) => {
-  const eventId = req.params.id;
-  const eventData = req.body;
-
-  try {
-    const updatedEvent = await createOrUpdateEvent(eventData, eventId);
-    res.status(200).json(updatedEvent);
-  } catch (error) {
-    console.error("Error updating/creating event:", error);
-    res.status(500).json({ message: "Internal server error" });
+  @Put("{id}")
+  public async updateEvent(@Path() id: string, @Body() eventData: Event): Promise<Event> {
+    return createOrUpdateEvent(eventData, id);
   }
-});
 
-eventsRouter.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
+  @Delete('{id}')
+  @SuccessResponse('204', 'No Content')
+  @Response('404', 'Not Found')
+  public async removeEvent(@Path() id: string): Promise<void> {
     const success = await deleteEvent(id);
     if (success) {
-      res.status(204).send(); // No Content
+      this.setStatus(204);
+      return;
     } else {
-      res.status(404).json({ message: "Event not found" }); // Not Found
+      throw new Error('404, Event not found');
     }
-  } catch (error) {
-    console.error("Error deleting event:", error);
-    res.status(500).json({ message: "Internal server error" });
   }
-});
+}
+
