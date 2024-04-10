@@ -6431,5 +6431,36 @@
     "description": "Descriptiom",
     "tickets": [],
     "id": "e4ade613-2788-4dcd-b202-726949909262"
+  },
+  {
+    "name": "Testing",
+    "date": "2024-04-11T09:30",
+    "description": "Make Coffee",
+    "tickets": [],
+    "id": "0e769fc2-182f-4d04-80c8-dfd2559fa063"
+  },
+  {
+    "name": "Coffee and Code and Tests",
+    "date": "2024-04-13T11:32",
+    "description": "Test Description",
+    "tickets": [],
+    "id": "bd371063-3e6b-44ea-8bd2-5c3d8d6e13bb"
+  },
+  {
+    "name": "Coffee and Code and Tests",
+    "date": "2024-04-19T08:30",
+    "description": "More tests",
+    "tickets": [
+      {
+        "name": "VIP",
+        "type": "Adult",
+        "price": 200,
+        "bookingFee": 10,
+        "availability": "available",
+        "id": "8db69fe6-d518-43c4-9b67-809afeffc094",
+        "eventId": "bf6e7f4c-15e6-4b10-9a5e-f98bc14c9088"
+      }
+    ],
+    "id": "bf6e7f4c-15e6-4b10-9a5e-f98bc14c9088"
   }
 ]

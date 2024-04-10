@@ -37,3 +37,8 @@ docker-compose up --build
 The API documentation is available at the following URL: http://localhost:3001/docs
 
 These should be running under (http://localhost:3001/docs)
+
+It now uses codegend RTKQuery to handle requests to the API.
+https://redux-toolkit.js.org/rtk-query/usage/code-generation
+
+

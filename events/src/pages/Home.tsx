@@ -1,31 +1,19 @@
 import EventForm from "../components/EventForm/EventForm";
-import { useSaveEvent } from "../hooks/useSaveEvent";
 import { useNavigate } from "react-router-dom";
+import { Event, useCreateEventMutation } from "../services/generated/eventsApi";
 
-export interface Ticket {
-  id?: string;
-  eventId?: string;
-  name: string;
-  type: string;
-  price: number;
-  bookingFee: number;
-  availability: "available" | "sold out";
-}
-
-export interface Event {
-  id?: string;
-  name: string;
-  date: string;
-  description: string;
-  tickets?: Ticket[];
-}
 export const Home = () => {
-  const { saveEvent } = useSaveEvent();
+  const [createEvent] = useCreateEventMutation();
   const navigate = useNavigate();
 
   const submitEvent = async (event: Event) => {
-    const data: Event = await saveEvent(event);
-    navigate(`/events/${data.id}`);
+    try {
+      const data: Event = await createEvent({ event }).unwrap();
+      console.log(data);
+      navigate(`/events/${data.id}`);
+    } catch (error) {
+      console.error("Failed to create event", error);
+    }
   };
 
   return (

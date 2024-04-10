@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useEvents } from "../hooks/useEvents";
 import { DateTime } from "luxon";
 import {
   Text,
@@ -16,33 +14,41 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { CheckCircleIcon } from "@chakra-ui/icons";
+import { useGetEventQuery } from "../services/generated/eventsApi";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 const EventDetails = () => {
-  let { id } = useParams();
-  const { eventDetails, loading, error, loadEventDetails } = useEvents();
+  const { id } = useParams<{ id: string }>();
+  const {
+    data: eventDetails,
+    error,
+    isLoading,
+  } = useGetEventQuery(id ? { id } : skipToken);
 
-  useEffect(() => {
-    if (id) {
-      loadEventDetails(id);
-    }
-  }, [id]);
-
-  if (loading)
+  if (isLoading)
     return (
       <Box textAlign="center">
         <Spinner />
       </Box>
     );
-  if (error)
+  if (error) {
+    let errorMessage = "An unexpected error occurred";
+    if ("status" in error && error.status === "FETCH_ERROR") {
+      errorMessage = "Network error: Failed to fetch event";
+    } else if ("data" in error) {
+      errorMessage = `Server error: ${(error.data as Error).message}`;
+    }
+
     return (
       <Alert status="error">
         <AlertIcon />
-        Error: {error}
+        {errorMessage}
       </Alert>
     );
+  }
   if (!eventDetails) return <Box>No event found</Box>;
   const formattedDate = DateTime.fromISO(eventDetails.date).toLocaleString(
-    DateTime.DATETIME_FULL,
+    DateTime.DATETIME_FULL
   );
 
   return (

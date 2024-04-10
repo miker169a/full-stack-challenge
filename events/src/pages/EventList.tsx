@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useEvents } from "../hooks/useEvents"; // Adjust the import path as needed
-import { DateTime } from "luxon"; // Adjust the import path as needed
+import { DateTime } from "luxon";
 import { Link as RouterLink } from "react-router-dom";
+import { useGetEventsQuery } from "../services/generated/eventsApi";
 import {
   Box,
   Heading,
@@ -39,7 +39,6 @@ export interface Event {
 
 function EventList() {
   const [page, setPage] = useState(1);
-  const { events, loading, error, loadEvents } = useEvents();
   const [sortBy, setSortBy] = useState<keyof Event | undefined>(undefined);
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const [filterType, setFilterType] = useState<"name" | "description">("name");
@@ -47,11 +46,11 @@ function EventList() {
 
   function debounce<F extends (...args: any[]) => any>(
     func: F,
-    wait: number,
+    wait: number
   ): (...args: Parameters<F>) => void {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    return function(...args: Parameters<F>) {
+    return function (...args: Parameters<F>) {
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
       }
@@ -60,28 +59,29 @@ function EventList() {
   }
 
   const handleFilterValueChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     debouncedSetFilterValue(event.target.value);
   };
 
   const debouncedSetFilterValue = useRef(debounce(setFilterValue, 200)).current;
 
-  useEffect(() => {
-    loadEvents({
-      requestedPage: page,
-      sortBy,
-      order,
-      filterType,
-      filterValue,
-    });
-  }, [page, sortBy, order, filterType, filterValue]);
+  const {
+    data: events = [],
+    error,
+    isLoading,
+  } = useGetEventsQuery({
+    page,
+    sortBy,
+    order,
+    filterType,
+    filterValue,
+  });
 
   const nextPage = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  // Function to navigate to the previous page
   const prevPage = () => {
     setPage((prevPage) => Math.max(prevPage - 1, 1));
   };
@@ -90,19 +90,28 @@ function EventList() {
     filterValueInputRef.current?.focus();
   }, []);
 
-  if (loading && !events.length)
+  if (isLoading)
     return (
       <Box textAlign="center">
         <Spinner />
       </Box>
     );
-  if (error && !events.length)
+
+  if (error) {
+    let errorMessage = "An unexpected error occurred";
+    if ("status" in error && error.status === "FETCH_ERROR") {
+      errorMessage = "Network error: Failed to fetch event";
+    } else if ("data" in error) {
+      errorMessage = `Server error: ${(error.data as Error).message}`;
+    }
+
     return (
       <Alert status="error">
         <AlertIcon />
-        {error}
+        {errorMessage}
       </Alert>
     );
+  }
 
   return (
     <VStack spacing={4} align="stretch">
