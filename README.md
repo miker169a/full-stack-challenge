@@ -46,23 +46,23 @@ The API documentation, powered by TSOA, is accessible at `http://localhost:3001/
 #### RTKQuery Code Generation
 
 - To generate TSOA routes and Swagger docs, run:
-  
+
   ```bash
   cd api
   npm run generate
-```
+  ```
 - For generating the client API for RTKQuery, execute:
 
-      ```bash
-      cd events
-      npm run generate-api
-      ```
+```bash
+    cd events
+    npm run generate-api
+```
 
 - To populate the database with sample data (warning: this will delete current data):
 
-      ```bash
-      cd api
-      ts-node generateEvents.ts
-      ```
-      Ensure TS-Node is installed globally for the above command to work.
+  ```bash
+  cd api
+  ts-node generateEvents.ts
+  ```
+- Ensure TS-Node is installed globally for the above command to work.
 
