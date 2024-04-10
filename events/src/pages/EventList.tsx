@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import { Link as RouterLink } from "react-router-dom";
-import { useGetEventsQuery } from "../services/generated/eventsApi";
+import { useGetEventsQuery, Event } from "../services/generated/eventsApi";
 import {
   Box,
   Heading,
@@ -18,24 +18,6 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-
-export interface Ticket {
-  id?: string;
-  eventId?: string;
-  name: string;
-  type: string;
-  price: number;
-  bookingFee: number;
-  availability: "available" | "sold out";
-}
-
-export interface Event {
-  id?: string;
-  name: string;
-  date: string;
-  description: string;
-  tickets?: Ticket[];
-}
 
 function EventList() {
   const [page, setPage] = useState(1);
@@ -71,6 +53,7 @@ function EventList() {
     error,
     isLoading,
   } = useGetEventsQuery({
+
     page,
     sortBy,
     order,
