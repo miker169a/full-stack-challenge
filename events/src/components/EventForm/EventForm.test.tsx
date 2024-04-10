@@ -27,14 +27,14 @@ describe("EventForm", () => {
   });
 
   it("displays initial ticket information inputs and add ticket button", async () => {
-    render(<EventForm onSubmit={() => {}} />);
+    render(<EventForm onSubmit={() => { }} />);
 
     expect(
       screen.getByRole("button", { name: /add ticket type/i })
     ).toBeInTheDocument();
   });
   it("displays ticket inputs when add ticket button is clicked", async () => {
-    render(<EventForm onSubmit={() => {}} />);
+    render(<EventForm onSubmit={() => { }} />);
     await userEvent.click(
       screen.getByRole("button", { name: /add ticket type/i })
     );

@@ -27,14 +27,14 @@ function EventList() {
 
   function debounce<F extends (...args: any[]) => any>(
     func: F,
-    wait: number }} />);
+    wait: number
+  ): (...args: Parameters<F>) => void {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    expect(
-      screen.getByRole("button", { name: /add ticket type/i })
-    ).toBeInTheDocument();
-  });
-  it("displays ticket inputs when add ticket button is clicked", async () => {
-    render(<EventForm onSubmit={() => {
+    return function (...args: Parameters<F>) {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
       timeoutId = setTimeout(() => func(...args), wait);
     };
   }

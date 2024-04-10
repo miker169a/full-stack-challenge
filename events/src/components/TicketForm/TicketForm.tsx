@@ -12,7 +12,7 @@ import {
   Input,
   Box,
 } from "@chakra-ui/react";
-import { Ticket } from "../../pages/EventList";
+import { Ticket } from "../../services/generated/eventsApi";
 
 type TicketFormProps = {
   ticket: Ticket;
