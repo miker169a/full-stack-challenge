@@ -7,8 +7,8 @@ import App from "./App.tsx";
 
 const theme = extendTheme({
   config: {
-    initialColorMode: "dark", // or 'dark'
-    useSystemColorMode: true, // set to `true` to use the system color mode
+    initialColorMode: "dark",
+    useSystemColorMode: true,
   },
   fonts: {
     heading: "Inter, sans-serif",
@@ -25,3 +25,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </ChakraProvider>
   </React.StrictMode>
 );
+ 
+ 
+}} />);
+
+    expect(
+      screen.getByRole("button", { name: /add ticket type/i })
+    ).toBeInTheDocument();
+  });
+  it("displays ticket inputs when add ticket button is clicked", async () => {
+    render(<EventForm onSubmit={() => {

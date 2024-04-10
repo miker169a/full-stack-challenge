@@ -15,9 +15,8 @@ import {
   Divider,
   Flex,
   Button,
-  Input,
-  Select,
 } from "@chakra-ui/react";
+import { Filters } from "../components/Filters/Filters";
 
 function EventList() {
   const [page, setPage] = useState(1);
@@ -28,14 +27,14 @@ function EventList() {
 
   function debounce<F extends (...args: any[]) => any>(
     func: F,
-    wait: number
-  ): (...args: Parameters<F>) => void {
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    wait: number }} />);
 
-    return function (...args: Parameters<F>) {
-      if (timeoutId !== null) {
-        clearTimeout(timeoutId);
-      }
+    expect(
+      screen.getByRole("button", { name: /add ticket type/i })
+    ).toBeInTheDocument();
+  });
+  it("displays ticket inputs when add ticket button is clicked", async () => {
+    render(<EventForm onSubmit={() => {
       timeoutId = setTimeout(() => func(...args), wait);
     };
   }
@@ -53,7 +52,6 @@ function EventList() {
     error,
     isLoading,
   } = useGetEventsQuery({
-
     page,
     sortBy,
     order,
@@ -103,39 +101,20 @@ function EventList() {
       <Heading as="h1" size="xl" textAlign="center">
         Events
       </Heading>
-      <Flex justifyContent="space-between">
-        <Select
-          placeholder="Sort By"
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as keyof Event)}
-        >
-          <option value="name">Name</option>
-          <option value="date">Date</option>
-        </Select>
-        <Select
-          placeholder="Order"
-          value={order}
-          onChange={(e) => setOrder(e.target.value as "asc" | "desc")}
-        >
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </Select>
-        <Select
-          value={filterType}
-          onChange={(e) =>
-            setFilterType(e.target.value as "name" | "description")
-          }
-        >
-          <option value="name">Name</option>
-          <option value="description">Description</option>
-        </Select>
-        <Input
-          placeholder="Filter Value"
-          value={filterValue}
-          onChange={handleFilterValueChange}
-          ref={filterValueInputRef}
-        />
-      </Flex>
+      <Filters
+        {...{
+          sortBy,
+          setSortBy,
+          order,
+          setOrder,
+          filterType,
+          setFilterType,
+          filterValue,
+          setFilterValue,
+          handleFilterValueChange,
+          filterValueInputRef,
+        }}
+      />
       <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing={5}>
         {events.map((event: Event) => (
           <Link
@@ -159,28 +138,21 @@ function EventList() {
                   p={2}
                   textAlign="center"
                   display="flex"
-                  flexDirection="column" // Adjust this to stack items vertically
+                  flexDirection="column"
                   alignItems="center"
                   justifyContent="center"
                 >
-                  {
-                    // Assuming `event.date` is your ISO date string
-                    DateTime.fromISO(event.date).toLocaleString({
-                      month: "long",
-                    }) // Example: January
-                  }
+                  {DateTime.fromISO(event.date).toLocaleString({
+                    month: "long",
+                  })}
                   <br />
-                  {
-                    DateTime.fromISO(event.date).toLocaleString({
-                      day: "2-digit",
-                    }) // Example: 01
-                  }
+                  {DateTime.fromISO(event.date).toLocaleString({
+                    day: "2-digit",
+                  })}
                   <br />
-                  {
-                    DateTime.fromISO(event.date)
-                      .setZone("local")
-                      .toLocaleString(DateTime.TIME_SIMPLE) // Example: 10:30 AM
-                  }
+                  {DateTime.fromISO(event.date)
+                    .setZone("local")
+                    .toLocaleString(DateTime.TIME_SIMPLE)}
                 </Box>
                 <Divider orientation="vertical" />
                 <Box p={5} flex="1">

@@ -2,25 +2,22 @@ import "@testing-library/jest-dom";
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
-import EventForm from "./EventForm"; // Adjust the import path as needed
+import EventForm from "./EventForm";
 
 describe("EventForm", () => {
   it("submits correct data when the form is filled and submitted", async () => {
     const mockSubmit = vi.fn();
     render(<EventForm onSubmit={mockSubmit} />);
 
-    // Fill out the form
     await userEvent.type(screen.getByLabelText(/event name/i), "Test Event");
     await userEvent.type(screen.getByLabelText(/event date/i), "2024-01-01");
     await userEvent.type(
       screen.getByLabelText(/event description/i),
-      "This is a test event.",
+      "This is a test event."
     );
 
-    // Submit the form
     fireEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-    // Expect the mock submit function to be called with the form data
     expect(mockSubmit).toHaveBeenCalledWith({
       name: "Test Event",
       date: "2024-01-01",
@@ -32,17 +29,15 @@ describe("EventForm", () => {
   it("displays initial ticket information inputs and add ticket button", async () => {
     render(<EventForm onSubmit={() => {}} />);
 
-    // Check for the "Add Ticket Type" button
     expect(
-      screen.getByRole("button", { name: /add ticket type/i }),
+      screen.getByRole("button", { name: /add ticket type/i })
     ).toBeInTheDocument();
   });
   it("displays ticket inputs when add ticket button is clicked", async () => {
     render(<EventForm onSubmit={() => {}} />);
     await userEvent.click(
-      screen.getByRole("button", { name: /add ticket type/i }),
+      screen.getByRole("button", { name: /add ticket type/i })
     );
-    // Check for the presence of ticket information inputs
     expect(screen.getByPlaceholderText(/ticket name/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/ticket type/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/price/i)).toBeInTheDocument();
@@ -54,64 +49,58 @@ describe("EventForm", () => {
     const mockSubmit = vi.fn();
     render(<EventForm onSubmit={mockSubmit} />);
 
-    // Fill out the event details
     await userEvent.type(screen.getByLabelText(/event name/i), "Test Event");
     await userEvent.type(screen.getByLabelText(/event date/i), "2024-01-01");
     await userEvent.type(
       screen.getByLabelText(/event description/i),
-      "This is a test event.",
+      "This is a test event."
     );
     await userEvent.click(
-      screen.getByRole("button", { name: /add ticket type/i }),
+      screen.getByRole("button", { name: /add ticket type/i })
     );
 
-    // Fill out the initial ticket type
     await userEvent.type(
       screen.getAllByPlaceholderText(/ticket name/i)[0],
-      "General Admission",
+      "General Admission"
     );
     await userEvent.type(
       screen.getAllByPlaceholderText(/ticket type/i)[0],
-      "Adult",
+      "Adult"
     );
     await userEvent.type(screen.getAllByPlaceholderText(/price/i)[0], "100");
     await userEvent.type(
       screen.getAllByPlaceholderText(/booking fee/i)[0],
-      "10",
+      "10"
     );
     await userEvent.selectOptions(
       screen.getAllByRole("combobox")[0],
-      "available",
+      "available"
     );
 
-    // Add a new ticket type
     await userEvent.click(
-      screen.getByRole("button", { name: /add ticket type/i }),
+      screen.getByRole("button", { name: /add ticket type/i })
     );
 
-    // Fill out the second ticket type
     await userEvent.type(
       screen.getAllByPlaceholderText(/ticket name/i)[1],
-      "VIP Pass",
+      "VIP Pass"
     );
     await userEvent.type(
       screen.getAllByPlaceholderText(/ticket type/i)[1],
-      "Adult",
+      "Adult"
     );
     await userEvent.type(screen.getAllByPlaceholderText(/price/i)[1], "200");
     await userEvent.type(
       screen.getAllByPlaceholderText(/booking fee/i)[1],
-      "20",
+      "20"
     );
     await userEvent.selectOptions(
       screen.getAllByRole("combobox")[1],
-      "available",
+      "available"
     );
 
-    // Submit the form
     await userEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-    // Expect the mock submit function to be called with the form data including both ticket types
     expect(mockSubmit).toHaveBeenCalledWith({
       description: "This is a test event.",
       name: "Test Event",
@@ -139,17 +128,14 @@ describe("EventForm", () => {
     const mockSubmit = vi.fn();
     render(<EventForm onSubmit={mockSubmit} />);
 
-    // Attempt to submit the form without filling out the fields
     await userEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-    // Check for error messages
     expect(screen.getByText(/event name is required\./i)).toBeInTheDocument();
     expect(screen.getByText(/event date is required\./i)).toBeInTheDocument();
     expect(
-      screen.getByText(/event description is required\./i),
+      screen.getByText(/event description is required\./i)
     ).toBeInTheDocument();
 
-    // Expect the submit function not to be called
     expect(mockSubmit).not.toHaveBeenCalled();
   });
 });
