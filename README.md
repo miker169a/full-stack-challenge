@@ -41,4 +41,27 @@ These should be running under (http://localhost:3001/docs)
 It now uses codegend RTKQuery to handle requests to the API.
 https://redux-toolkit.js.org/rtk-query/usage/code-generation
 
+*** CodeGen ***
+To generate the api codegen run the following command:
+```bash 
+cd api
+npm run generate
+```bash
+
+This will generate swagger docs and also TSOA code gen routes.
+
+To generate the client api for RTKQuery run the following command:
+```bash
+cd events
+npm run generate-api
+```bash
+
+To generate lots of data ** This will delete all the current data **
+```bash
+cd api
+ts-node generateEvents.ts
+```bash
+-- Above assumes TS-Node is installed globally
+
+
 
