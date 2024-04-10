@@ -228,7 +228,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
           <FormControl isInvalid={Boolean(errors.date)}>
             <FormLabel htmlFor="date">Event Date</FormLabel>
             <Input
-              as="input" 
+              as="input"
               id="date"
               name="date"
               type="datetime-local"
