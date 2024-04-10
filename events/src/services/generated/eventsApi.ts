@@ -60,7 +60,11 @@ export type CreateEventApiResponse = /** status 201 Created */ Event;
 export type CreateEventApiArg = {
   event: Event;
 };
-export type GetEventsApiResponse = /** status 200 Ok */ Event[];
+export type GetEventsApiResponse = /** status 200 Ok */ {
+  limit: number;
+  page: number;
+  events: Event[];
+};
 export type GetEventsApiArg = {
   page?: number;
   limit?: number;
@@ -96,7 +100,7 @@ export type Event = {
   name: string;
   date: string;
   description: string;
-  tickets?: Ticket[];
+  tickets: Ticket[];
 };
 export const {
   useCreateEventMutation,

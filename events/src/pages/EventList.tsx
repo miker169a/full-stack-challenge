@@ -67,7 +67,7 @@ function EventList() {
   const debouncedSetFilterValue = useRef(debounce(setFilterValue, 200)).current;
 
   const {
-    data: events = [],
+    data: eventsData,
     error,
     isLoading,
   } = useGetEventsQuery({
@@ -77,6 +77,8 @@ function EventList() {
     filterType,
     filterValue,
   });
+
+  const events = eventsData?.events ?? [];
 
   const nextPage = () => {
     setPage((prevPage) => prevPage + 1);

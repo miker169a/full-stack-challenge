@@ -13,5 +13,5 @@ export interface Event {
   name: string;
   date: string;
   description: string;
-  tickets?: Ticket[];
+  tickets: Ticket[];
 }

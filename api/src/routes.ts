@@ -32,7 +32,7 @@ const models: TsoaRoute.Models = {
             "name": {"dataType":"string","required":true},
             "date": {"dataType":"string","required":true},
             "description": {"dataType":"string","required":true},
-            "tickets": {"dataType":"array","array":{"dataType":"refObject","ref":"Ticket"}},
+            "tickets": {"dataType":"array","array":{"dataType":"refObject","ref":"Ticket"},"required":true},
         },
         "additionalProperties": false,
     },

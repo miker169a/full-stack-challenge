@@ -5,42 +5,22 @@ import {
   Center,
   Input,
   Button,
-  Select,
-  NumberInput,
-  NumberInputField,
   Textarea,
   FormErrorMessage,
   VStack,
   HStack,
   Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
-  Box,
 } from "@chakra-ui/react";
 
-interface EventFormData {
-  name: string;
-  date: string;
-  description: string;
-  tickets: Ticket[];
-}
-
-interface Ticket {
-  name: string;
-  type: string;
-  price: number;
-  bookingFee: number;
-  availability: "available" | "sold out";
-}
+import { Event, Ticket } from "../../services/generated/eventsApi";
+import { TicketForm } from "../TicketForm/TicketForm";
 
 interface EventFormProps {
-  onSubmit: (data: EventFormData) => void;
+  onSubmit: (data: Event) => void;
 }
 
 const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
-  const [formData, setFormData] = useState<EventFormData>({
+  const [formData, setFormData] = useState<Event>({
     name: "",
     date: "",
     description: "",
@@ -85,7 +65,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
   };
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -94,7 +74,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
   const handleTicketChange = (
     index: number,
     field: keyof Ticket,
-    value: any,
+    value: any
   ) => {
     const updatedTicketTypes = formData.tickets.map(
       (ticket: Ticket, i: number) => {
@@ -102,13 +82,13 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
           return { ...ticket, [field]: value };
         }
         return ticket;
-      },
+      }
     );
     setFormData({ ...formData, tickets: updatedTicketTypes });
   };
 
   const [openTicketIndex, setOpenTicketIndex] = useState<number | undefined>(
-    undefined,
+    undefined
   );
 
   const addTicketType = () => {
@@ -128,7 +108,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
 
   const handleToggle = (index: number) => {
     setOpenTicketIndex((prevIndex) =>
-      prevIndex === index ? undefined : index,
+      prevIndex === index ? undefined : index
     );
   };
 
@@ -136,80 +116,6 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const renderTicketTypeForm = (ticket: Ticket, index: number) => (
-    <AccordionItem key={index}>
-      <h2>
-        <AccordionButton onClick={() => handleToggle(index)}>
-          <Box flex="1" textAlign="left">
-            Ticket Type {index + 1}: {ticket.name || "New Ticket"}
-          </Box>
-          <AccordionIcon />
-        </AccordionButton>
-      </h2>
-      <AccordionPanel pb={4}>
-        <HStack justifyContent="space-between" pt={4}>
-          <FormControl key={index} mb={4}>
-            {" "}
-            <FormLabel htmlFor={`ticket-name-${index}`}>Ticket Name</FormLabel>
-            <Input
-              id={`ticket-name-${index}`}
-              placeholder="Ticket Name"
-              value={ticket.name}
-              onChange={(e) =>
-                handleTicketChange(index, "name", e.target.value)
-              }
-            />
-            <FormLabel htmlFor={`ticket-type-${index}`}>Ticket Type</FormLabel>
-            <Input
-              id={`ticket-type-${index}`}
-              placeholder="Ticket Type"
-              value={ticket.type}
-              onChange={(e) =>
-                handleTicketChange(index, "type", e.target.value)
-              }
-            />
-            <FormLabel htmlFor={`ticket-price-${index}`}>Price</FormLabel>
-            <NumberInput
-              value={ticket.price}
-              onChange={(valueString) =>
-                handleTicketChange(index, "price", parseFloat(valueString))
-              }
-              min={0}
-            >
-              <NumberInputField id={`ticket-price-${index}`} />
-            </NumberInput>
-            <FormLabel htmlFor={`ticket-bookingFee-${index}`}>
-              Booking Fee
-            </FormLabel>
-            <NumberInput
-              value={ticket.bookingFee}
-              onChange={(valueString) =>
-                handleTicketChange(index, "bookingFee", parseFloat(valueString))
-              }
-              min={0}
-            >
-              <NumberInputField id={`ticket-bookingFee-${index}`} />
-            </NumberInput>
-            <FormLabel htmlFor={`ticket-availability-${index}`}>
-              Availability
-            </FormLabel>
-            <Select
-              id={`ticket-availability-${index}`}
-              value={ticket.availability}
-              onChange={(e) =>
-                handleTicketChange(index, "availability", e.target.value)
-              }
-              placeholder="Select availability"
-            >
-              <option value="available">Available</option>
-              <option value="sold out">Sold Out</option>
-            </Select>
-          </FormControl>
-        </HStack>
-      </AccordionPanel>
-    </AccordionItem>
-  );
 
   return (
     <Center w="full" h="100vh">
@@ -253,7 +159,15 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit }) => {
           index={openTicketIndex}
           onChange={(index) => setOpenTicketIndex(index as number)}
         >
-          {formData.tickets.map(renderTicketTypeForm)}
+          {formData.tickets.map((ticket, index) => (
+            <TicketForm
+              key={index}
+              ticket={ticket}
+              index={index}
+              handleToggle={handleToggle}
+              handleTicketChange={handleTicketChange}
+            />
+          ))}
         </Accordion>
         <HStack justifyContent="space-between" pt={4}>
           <Button colorScheme="blue" type="submit">

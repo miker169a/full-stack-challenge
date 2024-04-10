@@ -71,7 +71,8 @@
 				"required": [
 					"name",
 					"date",
-					"description"
+					"description",
+					"tickets"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -127,10 +128,28 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"items": {
-										"$ref": "#/components/schemas/Event"
+									"properties": {
+										"limit": {
+											"type": "number",
+											"format": "double"
+										},
+										"page": {
+											"type": "number",
+											"format": "double"
+										},
+										"events": {
+											"items": {
+												"$ref": "#/components/schemas/Event"
+											},
+											"type": "array"
+										}
 									},
-									"type": "array"
+									"required": [
+										"limit",
+										"page",
+										"events"
+									],
+									"type": "object"
 								}
 							}
 						}
