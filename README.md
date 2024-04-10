@@ -2,66 +2,67 @@
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+These instructions will guide you through setting up the project locally for development and testing purposes.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them:
+Ensure you have the following software installed:
 
 - Docker
 - Docker Compose
 
-You can download Docker [here](https://www.docker.com/products/docker-desktop) and it comes with Docker Compose.
+Docker can be downloaded from [Docker's official website](https://www.docker.com/products/docker-desktop), which includes Docker Compose.
 
 ### Installing and Running
 
-A step by step series of examples that tell you how to get a development environment running.
+Follow these steps to set up your development environment:
 
 1. **Clone the repository**
 
-```bash
-git clone https://github.com/miker169a/full-stack-challenge.git
-cd yourprojectname
+    Use the following commands to clone the repository and navigate into the project directory:
+
+    ```bash
+    git clone https://github.com/yourusername/full-stack-challenge.git
+    cd full-stack-challenge
+    ```
+
+2. **Start the Application**
+
+    Launch the application with Docker Compose:
+
+    ```bash
+    docker-compose up --build
+    ```
+
+After starting the application:
+
+- The API will be available at `http://localhost:3001`
+- The website can be accessed at `http://localhost:3000`
+
+### API Documentation
+
+The API documentation, powered by TSOA, is accessible at `http://localhost:3001/docs`. TSOA generates both the Swagger documentation and route handlers based on TypeScript decorators, ensuring up-to-date and accurate documentation.
+
+#### RTKQuery Code Generation
+
+- To generate TSOA routes and Swagger docs, run:
+  
+  ```bash
+  cd api
+  npm run generate
 ```
+- For generating the client API for RTKQuery, execute:
 
-2. ** Start the Application**
+      ```bash
+      cd events
+      npm run generate-api
+      ```
 
-```bash
-docker-compose up --build
+- To populate the database with sample data (warning: this will delete current data):
 
-```bash
-
-
-3. ** Docs **
-
-The API documentation is available at the following URL: http://localhost:3001/docs
-
-These should be running under (http://localhost:3001/docs)
-
-It now uses codegend RTKQuery to handle requests to the API.
-https://redux-toolkit.js.org/rtk-query/usage/code-generation
-
-*** CodeGen ***
-To generate the api codegen run the following command:
-```bash 
-cd api
-npm run generate
-```bash
-
-This will generate swagger docs and also TSOA code gen routes.
-
-To generate the client api for RTKQuery run the following command:
-```bash
-cd events
-npm run generate-api
-```bash
-
-To generate lots of data ** This will delete all the current data **
-```bash
-cd api
-ts-node generateEvents.ts
-```bash
--- Above assumes TS-Node is installed globally
-
-
+      ```bash
+      cd api
+      ts-node generateEvents.ts
+      ```
+      Ensure TS-Node is installed globally for the above command to work.
 
